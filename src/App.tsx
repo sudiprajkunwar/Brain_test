@@ -1,61 +1,71 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import "./App.css";
 import Board from "./scenes/Board";
-
+import CustomButton from "./components/CustomButton";
+import CustomInput from "./components/CustomInput";
+import { Form, Modal } from "antd";
+import { useDispatch } from "react-redux";
+import { postUser } from "./redux/ducks/user";
+import "antd/dist/antd.css";
 const StyledHeading = styled.h1`
   color: #ff6d00;
   font-family: Creepy, serif;
   font-weight: normal;
   text-align: center;
-  font-size: 6em;
+  font-size: 3.5em;
+  margin-bottom: 8px;
 `;
 
-function App() {
+const StyledForm = styled(Form)`
+  transform: translateY(170px);
+  .ant-form-item-explain-error {
+    color: #ffffff;
+    font-family: Creepy, serif;
+    margin-top: 6px;
+    font-size: 18px;
+  }
+`;
+
+const App = () => {
+  const [start, setStart] = useState<Boolean>(false);
+  const dispatch = useDispatch();
+
+  const onFinish = (values: any) => {
+    console.log("Success:", values);
+    setStart(true);
+    dispatch(postUser(values));
+  };
   return (
     <div className="App">
       <StyledHeading>Memory - King</StyledHeading>
       <Board />
-      {/* <div className="overlay-text visible">
-        Click to Start
-      </div>
-      <div id="game-over-text" className="overlay-text">
-        GAME OVER
-        <span className="overlay-text-small">Click to Restart</span>
-      </div> */}
-      {/* <div id="victory-text" className="overlay-text">
-        VICTORY
-        <span className="overlay-text-small">Click to Restart</span>
-      </div> */}
 
-      {/* <div className="game-container">
-        <div className="game-info-container">
-          <div className="game-info">
-            Time <span id="time-remaining">100</span>
-          </div>
-          <div className="game-info">
-            Flips <span id="flips">0</span>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-back card-face">
-            <img className="cob-web cob-web-top-left" alt="icon" src={Cobweb} />
-            <img className="cob-web cob-web-top-right" src={Cobweb} alt="icon" />
-            <img className="cob-web cob-web-bottom-left" src={Cobweb} alt="icon" />
-            <img className="cob-web cob-web-bottom-right" src={Cobweb} alt="icon" />
-            <img className="spider" src={Spider} alt="icon" />
-          </div>
-          <div className="card-front card-face">
-            <img className="cob-web cob-web-top-left" alt="icon" src={CobwebGrey} />
-            <img className="cob-web cob-web-top-right" src={CobwebGrey} alt="icon" />
-            <img className="cob-web cob-web-bottom-left" src={CobwebGrey} alt="icon" />
-            <img className="cob-web cob-web-bottom-right" src={CobwebGrey} alt="icon" />
-            <img className="spider" src={Bat} alt="icon" />
-          </div>
-        </div>
-      </div> */}
+      {/* {true ? (
+        <Board />
+      ) : (
+        <>
+          <StyledForm name="basic" onFinish={onFinish}>
+            <Form.Item
+              name="username"
+              rules={[{ required: true, message: "Please Enter your Name!" }]}
+            >
+              <CustomInput placeholder="Enter Your Name" />
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <CustomButton
+                htmlType="submit"
+                // onClick={handleStartGame}
+              >
+                Start The Game
+              </CustomButton>
+            </Form.Item>
+          </StyledForm>
+        </>
+      )} */}
     </div>
   );
-}
+};
 
 export default App;

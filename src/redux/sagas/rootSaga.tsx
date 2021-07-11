@@ -1,8 +1,16 @@
-import { takeLatest } from "redux-saga/effects";
+import { all, takeLatest, takeLeading } from "redux-saga/effects";
 import { handleGetCard } from "./handlers/cards";
-import { GET_CARDS } from '../ducks/cards'
+import { GET_CARDS } from "../ducks/cards";
+import { POST_USER } from "./../ducks/user";
+import { handlePostUser } from "./handlers/user";
 
+function* getCardsWatcher() {
+  yield takeLatest(GET_CARDS, handleGetCard);
+}
+function* postUserWatcher() {
+  yield takeLeading(POST_USER, handlePostUser);
+}
 
-export function* watcherSaga() {
-    yield takeLatest(GET_CARDS, handleGetCard)
+export default function* watcherSaga() {
+  yield all([getCardsWatcher(), postUserWatcher()]);
 }

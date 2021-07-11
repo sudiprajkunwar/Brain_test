@@ -78,6 +78,7 @@
 // export default Board;
 
 import styled from "@emotion/styled";
+import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import conSecMin from "../components/conSecMin";
@@ -92,23 +93,28 @@ const StyledResult = styled.div`
 
 const StyledInfo = styled.div`
   color: #ffbb89;
-  font-size: 4em;
+  font-size: 1.5em;
+`;
+
+const StyledLoading = styled.h1`
+  font-size: 100px;
 `;
 const Board = () => {
   const dispatch = useDispatch();
   const [flips, setFlips] = useState(0);
   const [timer, setTimer] = useState(0);
+
   useEffect(() => {
     dispatch(getCards());
   }, [dispatch]);
 
+  const totalCards = useSelector(({ cards }: any) => cards);
   useEffect(() => {
     setTimeout(() => {
-      setTimer((prev: any) => prev + 1);
+      setTimer((prev: number) => prev + 1);
     }, 1000);
   }, [timer]);
 
-  const totalCards = useSelector((state: any) => state.card.card);
   return (
     <>
       <StyledResult>
@@ -119,7 +125,11 @@ const Board = () => {
           Flips <span>{flips}</span>
         </StyledInfo>
       </StyledResult>
-      <Card totalCards={totalCards} setFlips={setFlips} setTimer={setTimer} />
+      {totalCards.loading ? (
+        <StyledLoading>loading</StyledLoading>
+      ) : (
+        <Card totalCards={totalCards.cards} setFlips={setFlips} />
+      )}
     </>
   );
 };

@@ -165,6 +165,8 @@ import CobwebGrey from "../Assets/Images/CobwebGrey.png";
 import Spider from "../Assets/Images/Spider.png";
 import Image from "../components/Image";
 import { Cards } from "../models/interface";
+import { useMemo } from "react";
+import { Modal } from "antd";
 
 const StyledFrontFace = styled.div`
   background-color: #ffbb89;
@@ -184,8 +186,8 @@ const StyledBackFace = styled.div`
 const Container = styled.div`
   position: relative;
   cursor: url("Assets/Cursors/GhostHover.cur"), auto;
-  height: 175px;
-  width: 125px;
+  height: 145px;
+  width: 120px;
   .card-face {
     position: absolute;
     display: flex;
@@ -208,13 +210,14 @@ const Container = styled.div`
 const StyledWebPng = styled(Image)`
   position: absolute;
   transition: width 100ms ease-in-out, height 100ms ease-in-out;
-  width: 47px;
-  height: 47px;
+  width: 45px;
+  height: 45px;
 `;
 const StyledSpiderPng = styled(Image)`
   align-self: flex-start;
   transition: transform 100ms ease-in-out;
   transform: translateY(-10px);
+  height: 100px;
 `;
 const Wrapper = styled.section`
   margin: 50px auto;
@@ -224,108 +227,135 @@ const Wrapper = styled.section`
   justify-content: center;
 `;
 type CardProps = {
-  totalCards: Cards[];
+  totalCards: Array<Cards>;
   setFlips: any;
-  setTimer: any;
 };
 
-const Card: React.FC<CardProps> = ({ totalCards, setFlips, setTimer }) => {
-  const [openCard, setOpencard]: any = useState([]);
-  const [matched, setMatched]: any = useState([]);
+const Card: React.FC<CardProps> = ({ totalCards, setFlips }) => {
+  const [openCard, setOpencard] = useState<any>([]);
+  const [matched, setMatched] = useState<any>([]);
+  const [data, setData]: any = useState<Array<Cards>>([]);
+  const [visible, setVisible] = useState(false);
 
-  const pairOfCards = [...totalCards, ...totalCards];
+  const pairOfCards = useMemo(
+    () => [...totalCards, ...totalCards],
+    [totalCards]
+  );
+  useEffect(() => {
+    setData(pairOfCards.sort(() => Math.random() - 0.5));
+  }, [pairOfCards]);
 
   useEffect(() => {
-    const firstCard = pairOfCards[openCard[0]];
-    const secondCard = pairOfCards[openCard[1]];
-    if (secondCard && firstCard.id === secondCard.id) {
+    matched.length === pairOfCards.length / 2 && setVisible(true);
+  }, [matched, pairOfCards]);
+
+  useEffect(() => {
+    const firstCard = data[openCard[0]];
+    const secondCard = data[openCard[1]];
+    secondCard &&
+      firstCard.id === secondCard.id &&
       setMatched([...matched, firstCard.id]);
-    }
 
-    if (openCard.length === 2) setTimeout(() => setOpencard([]), 800);
-  }, [openCard]);
+    openCard.length === 2 && setTimeout(() => setOpencard([]), 800);
+  }, [openCard]); // eslint-disable-line
 
-  const handleCardClick = (idx: any) => {
+  const handleCardClick = (idx: number) => {
     setFlips((prev: any) => prev + 1);
     setOpencard((prev: any) => [...prev, idx]);
   };
-  console.log(matched, "matched");
-  console.log(openCard, "openCard");
+  // console.log(matched, "matched");
+  // console.log(openCard, "openCard");
+  const handleOk = () => {
+    setVisible(!visible);
+  };
 
+  const handleCancel = () => {
+    setVisible(!visible);
+  };
   return (
-    <Wrapper>
-      {pairOfCards.map((data: any, idx: any) => {
-        let isFlip = false;
-        if (openCard.includes(idx)) isFlip = true;
-        if (matched.includes(data.id)) {
-          isFlip = true;
-        }
-        return (
-          <Container
-            className="visible"
-            key={idx}
-            onClick={() => handleCardClick(idx)}
-          >
-            <StyledBackFace
-              className="card-face"
-              style={{
-                transform: isFlip ? "rotateY(-180deg)" : "rotateY(0)",
-              }}
+    <>
+      <Modal
+        title="Basic Modal"
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
+      <Wrapper>
+        {data.map((item: any, idx: any) => {
+          let isFlip = false;
+          if (openCard.includes(idx)) isFlip = true;
+          if (matched.includes(item.id)) {
+            isFlip = true;
+          }
+          return (
+            <Container
+              className="visible"
+              key={idx}
+              onClick={() => handleCardClick(idx)}
             >
-              <StyledWebPng
-                src={Cobweb}
-                top={0}
-                left={0}
-                transform="rotate(270deg)"
-              />
-              <StyledWebPng src={Cobweb} top={0} right={0} />
-              <StyledWebPng
-                src={Cobweb}
-                bottom={0}
-                left={0}
-                transform="rotate(180deg)"
-              />
-              <StyledWebPng
-                src={Cobweb}
-                right={0}
-                bottom={0}
-                transform="rotate(90deg)"
-              />
-              <StyledSpiderPng className="spider" src={Spider} />
-            </StyledBackFace>
-            <StyledFrontFace
-              className="card-face"
-              style={{
-                transform: !isFlip ? "rotateY(-180deg)" : "rotateY(0)",
-              }}
-            >
-              <StyledWebPng
-                src={CobwebGrey}
-                top={0}
-                left={0}
-                transform="rotate(270deg)"
-              />
-              <StyledWebPng src={CobwebGrey} top={0} right={0} />
-              <StyledWebPng
-                src={CobwebGrey}
-                left={0}
-                bottom={0}
-                transform="rotate(180deg)"
-              />
-              <StyledWebPng
-                src={CobwebGrey}
-                right={0}
-                bottom={0}
-                transform="rotate(90deg)"
-              />
-              {/* <StyledSpiderPng className="card-value" src={data.title} /> */}
-              <h1>{data.title}</h1>
-            </StyledFrontFace>
-          </Container>
-        );
-      })}
-      );
-    </Wrapper>
+              <StyledBackFace
+                className="card-face"
+                style={{
+                  transform: isFlip ? "rotateY(-180deg)" : "rotateY(0)",
+                }}
+              >
+                <StyledWebPng
+                  src={Cobweb}
+                  top={0}
+                  left={0}
+                  transform="rotate(270deg)"
+                />
+                <StyledWebPng src={Cobweb} top={0} right={0} />
+                <StyledWebPng
+                  src={Cobweb}
+                  bottom={0}
+                  left={0}
+                  transform="rotate(180deg)"
+                />
+                <StyledWebPng
+                  src={Cobweb}
+                  right={0}
+                  bottom={0}
+                  transform="rotate(90deg)"
+                />
+                <StyledSpiderPng className="spider" src={Spider} />
+              </StyledBackFace>
+              <StyledFrontFace
+                className="card-face"
+                style={{
+                  transform: !isFlip ? "rotateY(-180deg)" : "rotateY(0)",
+                }}
+              >
+                <StyledWebPng
+                  src={CobwebGrey}
+                  top={0}
+                  left={0}
+                  transform="rotate(270deg)"
+                />
+                <StyledWebPng src={CobwebGrey} top={0} right={0} />
+                <StyledWebPng
+                  src={CobwebGrey}
+                  left={0}
+                  bottom={0}
+                  transform="rotate(180deg)"
+                />
+                <StyledWebPng
+                  src={CobwebGrey}
+                  right={0}
+                  bottom={0}
+                  transform="rotate(90deg)"
+                />
+                <h1>{item.title}</h1>
+              </StyledFrontFace>
+            </Container>
+          );
+        })}
+      </Wrapper>
+    </>
   );
 };
 
