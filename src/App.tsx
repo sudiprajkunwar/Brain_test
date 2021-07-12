@@ -2,13 +2,16 @@ import React from "react";
 import "./App.css";
 import "antd/dist/antd.css";
 import Home from "./scenes/Home";
+import Router from "./router";
 
-const App = () => {
+function App() {
   return (
-    <div className="App">
-      <Home />
-    </div>
+    <Router>
+      <div className="App">
+        <Home />
+      </div>
+    </Router>
   );
-};
+}
 
 export default App;

@@ -98,6 +98,7 @@ const StyledInfo = styled.div`
 
 const StyledLoading = styled.h1`
   font-size: 100px;
+  text-align: center;
 `;
 const Board = () => {
   const dispatch = useDispatch();
@@ -123,9 +124,6 @@ const Board = () => {
     return () => clearInterval(gameTime);
   }, [timer]);
 
-  const handleCancel = () => {
-    setVisible(false);
-  };
   return (
     <>
       <StyledResult>
@@ -141,12 +139,7 @@ const Board = () => {
         <StyledLoading>loading</StyledLoading>
       ) : (
         <>
-          <UserDetailModal
-            visible={visible}
-            flips={flips}
-            timer={stopTime}
-            handleCancel={handleCancel}
-          />
+          <UserDetailModal visible={visible} flips={flips} timer={stopTime} />
           <Card
             totalCards={totalCards.cards}
             setFlips={setFlips}

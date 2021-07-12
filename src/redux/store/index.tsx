@@ -2,12 +2,13 @@ import { applyMiddleware, createStore } from "redux";
 import { combineReducers } from "redux";
 import createSagaMiddleware from "redux-saga";
 import { cardReducer } from "../ducks/cards";
-import { UserReducer } from "../ducks/user";
+import { getUserReducer, postUserReducer } from "../ducks/user";
 import watcherSaga from "../sagas/rootSaga";
 
 const reducer = combineReducers({
   cards: cardReducer,
-  user: UserReducer,
+  user: postUserReducer,
+  users: getUserReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();

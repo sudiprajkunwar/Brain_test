@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
 import { Form, Modal, Row, Typography } from "antd";
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, Redirect } from "react-router-dom";
 import CustomButton from "../components/CustomButton";
 import CustomInput from "../components/CustomInput";
 import { postUser } from "../redux/ducks/user";
@@ -35,11 +36,13 @@ const StyledModal = styled(Modal)`
     background: radial-gradient(#9d5900, #3d2200);
     .ant-modal-close-x {
       color: #ffffff;
+      display: none;
     }
     .ant-modal-header {
       background: radial-gradient(#9d5900, #5b4d3c);
       border-bottom: 1px solid #633903;
       .ant-modal-title {
+        text-align: center;
         color: #ffffff;
       }
     }
@@ -58,33 +61,24 @@ type userProps = {
   visible: any;
   flips: number;
   timer: any;
-  handleCancel: () => void;
 };
-const UserDetailModal: React.FC<userProps> = ({
-  visible,
-  flips,
-  timer,
-  handleCancel,
-}) => {
+const UserDetailModal: React.FC<userProps> = ({ visible, flips, timer }) => {
   const dispatch = useDispatch();
-  console.log(flips, "flips");
+  const [redirect, setRedirect] = useState(false);
   const onFinish = (values: any) => {
     console.log("Success:", { ...values, flips, timer });
     dispatch(postUser({ ...values, flips, timer }));
+    setRedirect(true);
   };
 
   return (
     <div>
-      <StyledModal
-        title="Score"
-        visible={visible}
-        footer={false}
-        onCancel={handleCancel}
-      >
+      {redirect && <Redirect to="/" />}
+      <StyledModal title="Your Score" visible={visible} footer={false}>
         <Row>
           <StyledForm name="basic" onFinish={onFinish} hideRequiredMark>
             <Form.Item
-              name="username"
+              name="name"
               rules={[{ required: true, message: "Please Enter your Name!" }]}
             >
               <CustomInput placeholder="Enter Your Name" />

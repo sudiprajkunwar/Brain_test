@@ -3,7 +3,7 @@ export const GET_CARDS = "GET_CARDS";
 export const GET_CARDS_SUCCESS = "GET_CARDS_SUCCESS";
 export const GET_CARDS_FAILED = "GET_CARDS_FAILED";
 
-const SET_CARDS = "SET_CARDS";
+// const SET_CARDS = "SET_CARDS";
 
 export const getCards = () => ({
   type: GET_CARDS,
@@ -19,10 +19,10 @@ export const getCardsFailed = (payload: any) => ({
   payload,
 });
 
-export const setCards = (card: any) => ({
-  type: SET_CARDS,
-  card,
-});
+// export const setCards = (card: any) => ({
+//   type: SET_CARDS,
+//   card,
+// });
 
 type stateProps = {
   loading: boolean;

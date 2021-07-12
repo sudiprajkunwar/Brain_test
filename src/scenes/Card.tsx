@@ -221,6 +221,7 @@ const StyledSpiderPng = styled(Image)`
 const Wrapper = styled.section`
   margin: 50px auto;
   display: grid;
+  padding-bottom: 45px;
   grid-template-columns: repeat(4, auto);
   grid-gap: 10px;
   justify-content: center;

@@ -1,19 +1,22 @@
-// import React from "react";
-// import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-// const Routing = () => {
-//   return (
-//     <Router>
-//       <Switch>{/* <Route exact path="/" component={"k"} /> */}</Switch>
-//     </Router>
-//   );
-// };
-
-// export default Routing;
-
 import React from "react";
-
-const index = () => {
-  return <div>sd</div>;
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import Heading from "../components/Heading";
+import Board from "../scenes/Board";
+import Home from "../scenes/Home";
+import HighScores from "./../scenes/HighScores";
+const Routing: React.FC = () => {
+  return (
+    <>
+      <Router>
+        <Heading title="Memory - King" />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/highscores" component={HighScores} />
+          <Route exact path="/board" component={Board} />
+        </Switch>
+      </Router>
+    </>
+  );
 };
 
-export default index;
+export default Routing;
