@@ -41,7 +41,7 @@ const HighScores = () => {
   }, [dispatch]);
 
   const user = useSelector(({ users }: any) => users.users);
-
+  const userSort = user.sort((a: any, b: any) => a.flips - b.flips);
   return (
     <Wrapper>
       <Heading title="HighScore" fontSize="2em" />
@@ -49,7 +49,7 @@ const HighScores = () => {
         <CustomButton>Start The Game</CustomButton>
       </Link>
       <StyledList>
-        {user.map((item: Users) => (
+        {userSort.map((item: Users) => (
           <Descriptions title={item.name} key={item.id}>
             <Descriptions.Item label="flips">{item.flips}</Descriptions.Item>
             <Descriptions.Item label="Duration">

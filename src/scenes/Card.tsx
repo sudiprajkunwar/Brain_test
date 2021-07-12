@@ -242,8 +242,7 @@ const Card: React.FC<CardProps> = ({
   const [openCard, setOpencard] = useState<any>([]);
   const [matched, setMatched] = useState<any>([]);
   const [data, setData] = useState<Array<Cards>>([]);
-  let timer: any = 0;
-  let prevent = false;
+
   const pairOfCards = useMemo(
     () => [...totalCards, ...totalCards],
     [totalCards]
@@ -273,19 +272,12 @@ const Card: React.FC<CardProps> = ({
   }, [openCard]); // eslint-disable-line
 
   const handleCardClick = (idx: number) => {
-    timer = setTimeout(function () {
-      if (!prevent) {
-        setFlips((prev: any) => prev + 1);
-        setOpencard((prev: any) => [...prev, idx]);
-      }
-      prevent = false;
-    }, 200);
+    if (idx !== openCard[0]) {
+      setFlips((prev: any) => prev + 1);
+      setOpencard((prev: any) => [...prev, idx]);
+    }
   };
 
-  const handleDoubleClick = () => {
-    clearTimeout(timer);
-    prevent = true;
-  };
   return (
     <>
       <Wrapper>
@@ -300,7 +292,6 @@ const Card: React.FC<CardProps> = ({
               className="visible"
               key={idx}
               onClick={() => handleCardClick(idx)}
-              onDoubleClick={handleDoubleClick}
             >
               <StyledBackFace
                 className="card-face"

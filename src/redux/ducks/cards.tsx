@@ -19,11 +19,6 @@ export const getCardsFailed = (payload: any) => ({
   payload,
 });
 
-// export const setCards = (card: any) => ({
-//   type: SET_CARDS,
-//   card,
-// });
-
 type stateProps = {
   loading: boolean;
   cards: Cards[];
