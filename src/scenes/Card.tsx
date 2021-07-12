@@ -184,7 +184,7 @@ const StyledBackFace = styled.div`
 
 const Container = styled.div`
   position: relative;
-  cursor: url("Assets/Cursors/GhostHover.cur"), auto;
+  cursor: pointer;
   height: 145px;
   width: 120px;
   .card-face {
@@ -242,11 +242,13 @@ const Card: React.FC<CardProps> = ({
   const [openCard, setOpencard] = useState<any>([]);
   const [matched, setMatched] = useState<any>([]);
   const [data, setData] = useState<Array<Cards>>([]);
-
+  let timer: any = 0;
+  let prevent = false;
   const pairOfCards = useMemo(
     () => [...totalCards, ...totalCards],
     [totalCards]
   );
+
   useEffect(() => {
     setData(pairOfCards.sort(() => Math.random() - 0.5));
   }, [pairOfCards]);
@@ -256,7 +258,7 @@ const Card: React.FC<CardProps> = ({
       setTimeout(() => {
         setVisible(true);
         setTimer(0);
-      }, 2000);
+      }, 1500);
     }
   }, [matched, pairOfCards]); // eslint-disable-line
 
@@ -270,12 +272,20 @@ const Card: React.FC<CardProps> = ({
     openCard.length === 2 && setTimeout(() => setOpencard([]), 800);
   }, [openCard]); // eslint-disable-line
 
-  const handleCardClick = (e: any, idx: number) => {
-    e.preventDefault();
-    setFlips((prev: any) => prev + 1);
-    setOpencard((prev: any) => [...prev, idx]);
+  const handleCardClick = (idx: number) => {
+    timer = setTimeout(function () {
+      if (!prevent) {
+        setFlips((prev: any) => prev + 1);
+        setOpencard((prev: any) => [...prev, idx]);
+      }
+      prevent = false;
+    }, 200);
   };
 
+  const handleDoubleClick = () => {
+    clearTimeout(timer);
+    prevent = true;
+  };
   return (
     <>
       <Wrapper>
@@ -289,8 +299,8 @@ const Card: React.FC<CardProps> = ({
             <Container
               className="visible"
               key={idx}
-              onClick={(e: any) => handleCardClick(e, idx)}
-              onDoubleClick={(e: any) => e.preventDefault()}
+              onClick={() => handleCardClick(idx)}
+              onDoubleClick={handleDoubleClick}
             >
               <StyledBackFace
                 className="card-face"
