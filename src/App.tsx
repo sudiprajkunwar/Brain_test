@@ -3,11 +3,9 @@ import styled from "@emotion/styled";
 import "./App.css";
 import Board from "./scenes/Board";
 import CustomButton from "./components/CustomButton";
-import CustomInput from "./components/CustomInput";
-import { Form, Modal } from "antd";
-import { useDispatch } from "react-redux";
-import { postUser } from "./redux/ducks/user";
 import "antd/dist/antd.css";
+// import Routing from "./router";
+
 const StyledHeading = styled.h1`
   color: #ff6d00;
   font-family: Creepy, serif;
@@ -17,54 +15,30 @@ const StyledHeading = styled.h1`
   margin-bottom: 8px;
 `;
 
-const StyledForm = styled(Form)`
-  transform: translateY(170px);
-  .ant-form-item-explain-error {
-    color: #ffffff;
-    font-family: Creepy, serif;
-    margin-top: 6px;
-    font-size: 18px;
-  }
-`;
-
+const Wrapper = styled.section``;
 const App = () => {
   const [start, setStart] = useState<Boolean>(false);
-  const dispatch = useDispatch();
 
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
+  const handleStartGame = () => {
     setStart(true);
-    dispatch(postUser(values));
   };
   return (
+    //<Routing>
     <div className="App">
-      <StyledHeading>Memory - King</StyledHeading>
-      <Board />
-
-      {/* {true ? (
-        <Board />
-      ) : (
-        <>
-          <StyledForm name="basic" onFinish={onFinish}>
-            <Form.Item
-              name="username"
-              rules={[{ required: true, message: "Please Enter your Name!" }]}
-            >
-              <CustomInput placeholder="Enter Your Name" />
-            </Form.Item>
-
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <CustomButton
-                htmlType="submit"
-                // onClick={handleStartGame}
-              >
-                Start The Game
-              </CustomButton>
-            </Form.Item>
-          </StyledForm>
-        </>
-      )} */}
+      <Wrapper>
+        <StyledHeading>Memory - King</StyledHeading>
+        {start ? (
+          <Board />
+        ) : (
+          <>
+            <CustomButton onClick={handleStartGame}>
+              Start The Game
+            </CustomButton>
+          </>
+        )}
+      </Wrapper>
     </div>
+    //</Routing>
   );
 };
 

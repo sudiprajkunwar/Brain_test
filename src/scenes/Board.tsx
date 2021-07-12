@@ -77,18 +77,18 @@
 
 // export default Board;
 
-import styled from "@emotion/styled";
-import { Modal } from "antd";
 import React, { useEffect, useState } from "react";
+import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
 import conSecMin from "../components/conSecMin";
 import { getCards } from "../redux/ducks/cards";
 import Card from "./Card";
+import UserDetailModal from "./UserDetailModal";
 
 const StyledResult = styled.div`
   grid-column: 1 / -1;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 `;
 
 const StyledInfo = styled.div`
@@ -102,19 +102,30 @@ const StyledLoading = styled.h1`
 const Board = () => {
   const dispatch = useDispatch();
   const [flips, setFlips] = useState(0);
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(1);
+  const [visible, setVisible] = useState(false);
+  const [stopTime, setStopTime] = useState(timer);
 
   useEffect(() => {
     dispatch(getCards());
   }, [dispatch]);
 
   const totalCards = useSelector(({ cards }: any) => cards);
+
   useEffect(() => {
-    setTimeout(() => {
-      setTimer((prev: number) => prev + 1);
+    let gameTime = setInterval(() => {
+      if (timer > 0) {
+        setTimer((prev: number) => prev + 1);
+        setStopTime(timer);
+      }
     }, 1000);
+
+    return () => clearInterval(gameTime);
   }, [timer]);
 
+  const handleCancel = () => {
+    setVisible(false);
+  };
   return (
     <>
       <StyledResult>
@@ -125,10 +136,24 @@ const Board = () => {
           Flips <span>{flips}</span>
         </StyledInfo>
       </StyledResult>
+
       {totalCards.loading ? (
         <StyledLoading>loading</StyledLoading>
       ) : (
-        <Card totalCards={totalCards.cards} setFlips={setFlips} />
+        <>
+          <UserDetailModal
+            visible={visible}
+            flips={flips}
+            timer={stopTime}
+            handleCancel={handleCancel}
+          />
+          <Card
+            totalCards={totalCards.cards}
+            setFlips={setFlips}
+            setTimer={setTimer}
+            setVisible={setVisible}
+          />
+        </>
       )}
     </>
   );

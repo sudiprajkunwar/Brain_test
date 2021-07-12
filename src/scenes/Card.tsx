@@ -166,7 +166,6 @@ import Spider from "../Assets/Images/Spider.png";
 import Image from "../components/Image";
 import { Cards } from "../models/interface";
 import { useMemo } from "react";
-import { Modal } from "antd";
 
 const StyledFrontFace = styled.div`
   background-color: #ffbb89;
@@ -229,13 +228,19 @@ const Wrapper = styled.section`
 type CardProps = {
   totalCards: Array<Cards>;
   setFlips: any;
+  setTimer: any;
+  setVisible: any;
 };
 
-const Card: React.FC<CardProps> = ({ totalCards, setFlips }) => {
+const Card: React.FC<CardProps> = ({
+  totalCards,
+  setFlips,
+  setTimer,
+  setVisible,
+}) => {
   const [openCard, setOpencard] = useState<any>([]);
   const [matched, setMatched] = useState<any>([]);
-  const [data, setData]: any = useState<Array<Cards>>([]);
-  const [visible, setVisible] = useState(false);
+  const [data, setData] = useState<Array<Cards>>([]);
 
   const pairOfCards = useMemo(
     () => [...totalCards, ...totalCards],
@@ -246,8 +251,13 @@ const Card: React.FC<CardProps> = ({ totalCards, setFlips }) => {
   }, [pairOfCards]);
 
   useEffect(() => {
-    matched.length === pairOfCards.length / 2 && setVisible(true);
-  }, [matched, pairOfCards]);
+    if (matched.length === pairOfCards.length / 2) {
+      setTimeout(() => {
+        setVisible(true);
+        setTimer(0);
+      }, 2000);
+    }
+  }, [matched, pairOfCards]); // eslint-disable-line
 
   useEffect(() => {
     const firstCard = data[openCard[0]];
@@ -259,31 +269,14 @@ const Card: React.FC<CardProps> = ({ totalCards, setFlips }) => {
     openCard.length === 2 && setTimeout(() => setOpencard([]), 800);
   }, [openCard]); // eslint-disable-line
 
-  const handleCardClick = (idx: number) => {
+  const handleCardClick = (e: any, idx: number) => {
+    e.preventDefault();
     setFlips((prev: any) => prev + 1);
     setOpencard((prev: any) => [...prev, idx]);
   };
-  // console.log(matched, "matched");
-  // console.log(openCard, "openCard");
-  const handleOk = () => {
-    setVisible(!visible);
-  };
 
-  const handleCancel = () => {
-    setVisible(!visible);
-  };
   return (
     <>
-      <Modal
-        title="Basic Modal"
-        visible={visible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
       <Wrapper>
         {data.map((item: any, idx: any) => {
           let isFlip = false;
@@ -295,7 +288,8 @@ const Card: React.FC<CardProps> = ({ totalCards, setFlips }) => {
             <Container
               className="visible"
               key={idx}
-              onClick={() => handleCardClick(idx)}
+              onClick={(e: any) => handleCardClick(e, idx)}
+              onDoubleClick={(e: any) => e.preventDefault()}
             >
               <StyledBackFace
                 className="card-face"
