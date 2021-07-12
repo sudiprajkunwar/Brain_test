@@ -13,6 +13,7 @@ const StyledHeading = styled.h1<Props>`
   text-align: center;
   font-size: ${(props) => props.fontSize || "3.5em"};
   margin-bottom: 8px;
+  margin-top: 20px;
 `;
 
 const index = (props: Props) => {

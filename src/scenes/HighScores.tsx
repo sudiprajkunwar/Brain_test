@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 
 const StyledList = styled.div`
   padding-top: 75px;
+  padding-bottom: 15px;
   text-align: center;
   .ant-descriptions {
     margin-bottom: 25px;
